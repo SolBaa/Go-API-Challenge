@@ -53,8 +53,8 @@ func main() {
 		//Delete a particular company in a particular User
 		// r.HandleFunc("/User/{UserID}/Companies/{companyID}", userController.DeleteCompanyFromUser).Methods("DELETE")
 
-		// // Delete all companies from a particular  User
-		// r.HandleFunc("/User/{UserID}/Companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
+		// Delete all companies from a particular  User
+		r.HandleFunc("/users/{userID}/companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
 
 		//Delete a particular User entirely
 		r.HandleFunc("/users/{userID}", userController.DeleteUser).Methods("DELETE")

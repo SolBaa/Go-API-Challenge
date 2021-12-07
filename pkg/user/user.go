@@ -76,6 +76,7 @@ func (c *userService) GetAllUsers() ([]models.User, error) {
 	}
 	return User, nil
 }
+
 func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.User, error) {
 	User := []models.User{}
 	if name != "" {
@@ -99,6 +100,7 @@ func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.U
 
 	return User, nil
 }
+
 func (c *userService) GetOneUser(userID string) (models.User, error) {
 	user := models.User{}
 	userId, err := strconv.Atoi(userID)
@@ -169,7 +171,7 @@ func (c *userService) DeleteAllCompaniesFromUser(userID string) (models.User, er
 		return models.User{}, err
 	}
 	company := models.Company{}
-	c.db.Model(&company).Where("User_id=?", userId).Delete(&company)
+	c.db.Model(&company).Where("user_id=?", userId).Delete(&company)
 
 	return UserModel, nil
 
