@@ -35,7 +35,7 @@ func (pc *companyService) CreateCompany(company viewmodels.CompanyViewmodel) (mo
 		Name: company.Name,
 		// PublicID: strconv.Itoa(userID),
 	}
-	err := pc.db.Create(&companyModel).Error
+	err := pc.db.Omit("UserID").Create(&companyModel).Error
 	if err != nil {
 		return models.Company{}, err
 	}
@@ -44,7 +44,7 @@ func (pc *companyService) CreateCompany(company viewmodels.CompanyViewmodel) (mo
 
 func (pc *companyService) GetAllCompanies() ([]models.Company, error) {
 	companies := []models.Company{}
-	err := pc.db.Find(&companies).Error
+	err := pc.db.Omit("UserID").Find(&companies).Error
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (pc *companyService) GetCompanyByID(companyID string) (models.Company, erro
 	if err != nil {
 		return models.Company{}, err
 	}
-	err = pc.db.Where("id = ?", companyId).First(&company).Error
+	err = pc.db.Omit("UserID").Where("id = ?", companyId).First(&company).Error
 	if err != nil {
 		return models.Company{}, err
 	}

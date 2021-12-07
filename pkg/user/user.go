@@ -19,7 +19,6 @@ type Service interface {
 	GetAllWithFilter(name, lastName, email string) ([]models.User, error)
 	GetOneUser(userID string) (models.User, error)
 	AddCompanyToUser(userID, companyID string, user viewmodels.CompanyRequest) (models.User, error)
-	// ModifyProductAmount(userID, productID string, product viewmodels.ProductRequest) error
 	DeleteUser(userID string) (models.User, error)
 	DeleteAllCompaniesFromUser(userID string) (models.User, error)
 	DeleteCompanyFromUser(userID, companyID string) (models.User, error)
@@ -103,7 +102,7 @@ func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.U
 func (c *userService) GetOneUser(userID string) (models.User, error) {
 	user := models.User{}
 	userId, err := strconv.Atoi(userID)
-	fmt.Printf("USERRRERERERER %v\n", userId)
+
 	if err != nil {
 		return models.User{}, err
 	}
@@ -121,37 +120,25 @@ func (c *userService) AddCompanyToUser(userID, companyID string, company viewmod
 	if err != nil {
 		return models.User{}, err
 	}
-	UserModel, err := c.GetOneUser(userID)
-	if err != nil {
-		return models.User{}, err
-	}
-	fmt.Printf("USSSEERRRR %+v", UserModel)
 
-	prod, err := c.cs.GetCompanyByID(companyID)
+	comp, err := c.cs.GetCompanyByID(companyID)
 	if err != nil {
 		return models.User{}, err
 	}
 	newCompany := models.Company{
-		Code:     userID,
-		PublicID: prod.PublicID,
-		Name:     prod.Name,
+		UserID: uint(userId),
+		Name:   comp.Name,
 	}
 
 	companies := []models.Company{}
-
-	for _, item := range UserModel.Company {
-		if item.PublicID == prod.PublicID {
-			fmt.Println("Company already in User")
-			return models.User{}, err
-		}
-
-	}
 	companies = append(companies, newCompany)
-	UserModel.Company = companies
+	userModel := models.User{
+		Company: companies,
+	}
 
-	c.db.Model(&newCompany).Where("id = ?", userId).Updates(&UserModel).Save(&newCompany)
-	fmt.Printf("USSSEERRRR %+v", UserModel)
-	return UserModel, nil
+	c.db.Model(&newCompany).Where("user_id=?", userModel.ID).Updates(&userModel).Save(&newCompany)
+
+	return userModel, nil
 
 }
 

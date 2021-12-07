@@ -4,8 +4,7 @@ import "gorm.io/gorm"
 
 type Company struct {
 	gorm.Model
-	Code     string `gorm:"primarykey"`
+	UserID   uint
 	PublicID string `json:"id"`
 	Name     string
-	Users    []User `gorm:"many2many:user_companies"`
 }
