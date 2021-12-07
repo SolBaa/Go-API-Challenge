@@ -40,7 +40,13 @@ func (pc *companyService) CreateCompany(company viewmodels.CompanyViewmodel) (mo
 }
 
 func (pc *companyService) GetAllCompanies() ([]models.Company, error) {
-	return []models.Company{}, nil
+	companies := []models.Company{}
+	err := pc.db.Find(&companies).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return companies, nil
 
 }
 

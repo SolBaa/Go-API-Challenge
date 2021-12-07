@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -17,7 +16,7 @@ import (
 type Service interface {
 	CreateUser(User viewmodels.UserViewModel) (models.User, error)
 	GetAllUsers() ([]models.User, error)
-	GetAllWithFilter(query url.Values) ([]models.User, error)
+	GetAllWithFilter(name, lastName, email string) ([]models.User, error)
 	GetOneUser(userID string) (models.User, error)
 	AddCompanyToUser(userID string, User viewmodels.CompanyRequest) (models.User, error)
 	// ModifyProductAmount(userID, productID string, product viewmodels.ProductRequest) error
@@ -78,12 +77,25 @@ func (c *userService) GetAllUsers() ([]models.User, error) {
 	}
 	return User, nil
 }
-func (c *userService) GetAllWithFilter(query url.Values) ([]models.User, error) {
+func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.User, error) {
 	User := []models.User{}
-	name := query.Get("name")
-	err := c.db.Preload("Company").Where("name = ?", name).Find(&User).Error
-	if err != nil {
-		return nil, err
+	if name != "" {
+		err := c.db.Preload("Company").Where("name = ?", name).Find(&User).Error
+		if err != nil {
+			return nil, err
+		}
+	}
+	if lastName != "" {
+		err := c.db.Preload("Company").Where("last_name = ?", lastName).Find(&User).Error
+		if err != nil {
+			return nil, err
+		}
+	}
+	if email != "" {
+		err := c.db.Preload("Company").Where("email = ?", email).Find(&User).Error
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return User, nil

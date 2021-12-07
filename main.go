@@ -13,7 +13,6 @@ import (
 	"github.com/Solbaa/marvik/pkg/company"
 	"github.com/Solbaa/marvik/pkg/db"
 	"github.com/Solbaa/marvik/pkg/user"
-
 	"github.com/gorilla/mux"
 )
 
@@ -30,11 +29,15 @@ func main() {
 
 	r := mux.NewRouter()
 	//Create a New User
-	r.HandleFunc("/users", userController.CreateUser).Methods("POST")
-	// Get a specific User
-	r.HandleFunc("/users/{userID}", userController.GetOneUser).Methods("GET")
-	//Get All the Users
-	r.HandleFunc("/users", userController.GetAllUsers).Methods("GET")
+	{
+		r.HandleFunc("/users", userController.CreateUser).Methods("POST")
+		// Get a specific User
+		r.HandleFunc("/users/{userID}", userController.GetOneUser).Methods("GET")
+		//Get All the Users
+		r.HandleFunc("/users", userController.GetAllUsers).Methods("GET")
+	}
+	// Search user by query strings
+	r.HandleFunc("/users-search", userController.SearchUsers).Methods("GET")
 
 	r.HandleFunc("/companies", companyController.CreateCompany).Methods("POST")
 	//Get all available Companies
@@ -51,7 +54,7 @@ func main() {
 	// r.HandleFunc("/User/{UserID}/Companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
 	// //Delete a particular Shopping User entirely
 	// r.HandleFunc("/User/{UserID}", userController.DeleteUser).Methods("DELETE")
-	r.PathPrefix("/swagger").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("./swagger"))))
+	// r.PathPrefix("/swagger").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("./swagger"))))
 
 	http.Handle("/", r)
 

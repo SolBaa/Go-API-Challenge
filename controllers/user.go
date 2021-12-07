@@ -51,28 +51,9 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func (c *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	query := r.URL.Query()
-	name := query.Get("name")
+
 	var usersViewmodel []viewmodels.UserViewModel
-	if name == "" {
-		users, err := c.UserService.GetAllUsers()
-		if err != nil {
-			viewmodels.JSONError(w, err, http.StatusBadRequest)
-			return
-		}
-		for _, u := range users {
-			comp := viewmodels.ModelToViewmodel(u.Company)
-			user := viewmodels.UserViewModel{
-				ID:       fmt.Sprint(u.ID),
-				Name:     u.Name,
-				LastName: u.LastName,
-				Email:    u.Email,
-				Company:  comp,
-			}
-			usersViewmodel = append(usersViewmodel, user)
-		}
-	}
-	users, err := c.UserService.GetAllWithFilter(query)
+	users, err := c.UserService.GetAllUsers()
 	if err != nil {
 		viewmodels.JSONError(w, err, http.StatusBadRequest)
 		return
@@ -91,6 +72,34 @@ func (c *UserController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(usersViewmodel)
 
+}
+func (c *UserController) SearchUsers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	query := r.URL.Query()
+	name := query.Get("name")
+	lastName := query.Get("lastName")
+	email := query.Get("email")
+	fmt.Println(name, lastName, email)
+
+	var usersViewmodel []viewmodels.UserViewModel
+	users, err := c.UserService.GetAllWithFilter(name, lastName, email)
+	if err != nil {
+		viewmodels.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+	for _, u := range users {
+		comp := viewmodels.ModelToViewmodel(u.Company)
+		user := viewmodels.UserViewModel{
+			ID:       fmt.Sprint(u.ID),
+			Name:     u.Name,
+			LastName: u.LastName,
+			Email:    u.Email,
+			Company:  comp,
+		}
+		usersViewmodel = append(usersViewmodel, user)
+	}
+
+	json.NewEncoder(w).Encode(usersViewmodel)
 }
 
 func (c *UserController) GetOneUser(w http.ResponseWriter, r *http.Request) {

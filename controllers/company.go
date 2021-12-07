@@ -44,6 +44,21 @@ func (c *CompanyController) CreateCompany(w http.ResponseWriter, r *http.Request
 }
 func (pc *CompanyController) GetAllCompanies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	var companyViewmodel []viewmodels.CompanyViewmodel
+	companies, err := pc.CompanyService.GetAllCompanies()
+	if err != nil {
+		viewmodels.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+	for _, company := range companies {
+		comp := viewmodels.CompanyViewmodel{
+			ID:   fmt.Sprint(company.ID),
+			Name: company.Name,
+		}
+		companyViewmodel = append(companyViewmodel, comp)
+	}
+
+	json.NewEncoder(w).Encode(companyViewmodel)
 
 }
 
