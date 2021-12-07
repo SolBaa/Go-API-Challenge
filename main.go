@@ -47,8 +47,8 @@ func main() {
 		r.HandleFunc("/companies/{companyID}", companyController.GetCompanyByID).Methods("GET")
 	}
 
-	// //Add a particular company to a particular  User
-	// r.HandleFunc("/User/{UserID}", userController.AddCompanyToUser).Methods("POST")
+	//Add a particular company to a particular User
+	r.HandleFunc("/users/{userID}/{companyID}", userController.AddCompanyToUser).Methods("POST")
 
 	// //Delete a particular company in a particular User
 	// r.HandleFunc("/User/{UserID}/Companies/{companyID}", userController.DeleteCompanyFromUser).Methods("DELETE")
@@ -56,8 +56,8 @@ func main() {
 	// // Delete all companies from a particular  User
 	// r.HandleFunc("/User/{UserID}/Companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
 
-	// //Delete a particular User entirely
-	// r.HandleFunc("/User/{UserID}", userController.DeleteUser).Methods("DELETE")
+	//Delete a particular User entirely
+	r.HandleFunc("/users/{userID}", userController.DeleteUser).Methods("DELETE")
 
 	// r.PathPrefix("/swagger").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("./swagger"))))
 

@@ -125,13 +125,14 @@ func (c *UserController) GetOneUser(w http.ResponseWriter, r *http.Request) {
 func (c *UserController) AddCompanyToUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	userID := mux.Vars(r)["userID"]
+	companyID := mux.Vars(r)["companyID"]
 	var companyReq viewmodels.CompanyRequest
 	err := json.NewDecoder(r.Body).Decode(&companyReq)
 	if err != nil {
 		viewmodels.JSONError(w, viewmodels.ErrBadRequest, http.StatusBadRequest)
 		return
 	}
-	user, err := c.UserService.AddCompanyToUser(userID, companyReq)
+	user, err := c.UserService.AddCompanyToUser(userID, companyID, companyReq)
 	if err != nil {
 		viewmodels.JSONError(w, err, http.StatusBadRequest)
 		return

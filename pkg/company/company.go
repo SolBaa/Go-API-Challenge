@@ -1,6 +1,7 @@
 package company
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/Solbaa/marvik/models"
@@ -55,6 +56,7 @@ func (pc *companyService) GetAllCompanies() ([]models.Company, error) {
 func (pc *companyService) GetCompanyByID(companyID string) (models.Company, error) {
 	company := models.Company{}
 	companyId, err := strconv.Atoi(companyID)
+	fmt.Println("GetCompanyByID", companyId)
 	if err != nil {
 		return models.Company{}, err
 	}

@@ -18,7 +18,7 @@ type Service interface {
 	GetAllUsers() ([]models.User, error)
 	GetAllWithFilter(name, lastName, email string) ([]models.User, error)
 	GetOneUser(userID string) (models.User, error)
-	AddCompanyToUser(userID string, User viewmodels.CompanyRequest) (models.User, error)
+	AddCompanyToUser(userID, companyID string, user viewmodels.CompanyRequest) (models.User, error)
 	// ModifyProductAmount(userID, productID string, product viewmodels.ProductRequest) error
 	DeleteUser(userID string) (models.User, error)
 	DeleteAllCompaniesFromUser(userID string) (models.User, error)
@@ -103,6 +103,7 @@ func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.U
 func (c *userService) GetOneUser(userID string) (models.User, error) {
 	user := models.User{}
 	userId, err := strconv.Atoi(userID)
+	fmt.Printf("USERRRERERERER %v\n", userId)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -115,22 +116,23 @@ func (c *userService) GetOneUser(userID string) (models.User, error) {
 	return user, nil
 }
 
-func (c *userService) AddCompanyToUser(userID string, company viewmodels.CompanyRequest) (models.User, error) {
-	// userId, err := strconv.Atoi(userID)
-	// if err != nil {
-	// 	return models.User{}, err
-	// }
+func (c *userService) AddCompanyToUser(userID, companyID string, company viewmodels.CompanyRequest) (models.User, error) {
+	userId, err := strconv.Atoi(userID)
+	if err != nil {
+		return models.User{}, err
+	}
 	UserModel, err := c.GetOneUser(userID)
 	if err != nil {
 		return models.User{}, err
 	}
+	fmt.Printf("USSSEERRRR %+v", UserModel)
 
-	prod, err := c.cs.GetCompanyByID(company.Company.PublicID)
+	prod, err := c.cs.GetCompanyByID(companyID)
 	if err != nil {
 		return models.User{}, err
 	}
 	newCompany := models.Company{
-		// UserID:   uint(userId),
+		Code:     userID,
 		PublicID: prod.PublicID,
 		Name:     prod.Name,
 	}
@@ -145,45 +147,13 @@ func (c *userService) AddCompanyToUser(userID string, company viewmodels.Company
 
 	}
 	companies = append(companies, newCompany)
-	UserModel = models.User{
-		Company: companies,
-	}
+	UserModel.Company = companies
 
-	c.db.Model(&newCompany).Where("User_id=?", UserModel.ID).Updates(&UserModel).Save(&newCompany)
-
+	c.db.Model(&newCompany).Where("id = ?", userId).Updates(&UserModel).Save(&newCompany)
+	fmt.Printf("USSSEERRRR %+v", UserModel)
 	return UserModel, nil
 
 }
-
-// func (c *userService) ModifyProductAmount(userID, productID string, product viewmodels.ProductRequest) error {
-// 	userId, err := strconv.Atoi(userID)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	UserModel, err := c.GetOneUser(userID)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	prod, err := company.NewService().GetProductByID(productID)
-// 	if err != nil {
-
-// 		return err
-// 	}
-
-// 	for _, item := range UserModel.company {
-// 		if item.PublicID == productID {
-// 			prod.Amount = product.Product.Amount
-// 			c.db.Model(&prod).Where("User_id=?", userId).Where("public_id = ?", productID).Updates(&prod)
-// 			return nil
-// 		}
-
-// 	}
-// 	fmt.Println("Product not found inside User")
-// 	return err
-
-// }
 
 func (c *userService) DeleteUser(userID string) (models.User, error) {
 	userId, err := strconv.Atoi(userID)
