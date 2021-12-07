@@ -1,6 +1,8 @@
 package company
 
 import (
+	"strconv"
+
 	"github.com/Solbaa/marvik/models"
 	"github.com/Solbaa/marvik/viewmodels"
 	"gorm.io/gorm"
@@ -9,7 +11,7 @@ import (
 type Service interface {
 	CreateCompany(company viewmodels.CompanyViewmodel) (models.Company, error)
 	GetAllCompanies() ([]models.Company, error)
-	GetCompanyByID(id string) (models.Company, error)
+	GetCompanyByID(CompanyID string) (models.Company, error)
 }
 
 type companyService struct {
@@ -50,7 +52,17 @@ func (pc *companyService) GetAllCompanies() ([]models.Company, error) {
 
 }
 
-func (pc *companyService) GetCompanyByID(id string) (models.Company, error) {
-	return models.Company{}, nil
+func (pc *companyService) GetCompanyByID(companyID string) (models.Company, error) {
+	company := models.Company{}
+	companyId, err := strconv.Atoi(companyID)
+	if err != nil {
+		return models.Company{}, err
+	}
+	err = pc.db.Where("id = ?", companyId).First(&company).Error
+	if err != nil {
+		return models.Company{}, err
+	}
+
+	return company, nil
 
 }

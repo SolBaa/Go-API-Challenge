@@ -35,25 +35,30 @@ func main() {
 		r.HandleFunc("/users/{userID}", userController.GetOneUser).Methods("GET")
 		//Get All the Users
 		r.HandleFunc("/users", userController.GetAllUsers).Methods("GET")
+		// Search user by query strings
+		r.HandleFunc("/users-search", userController.SearchUsers).Methods("GET")
 	}
-	// Search user by query strings
-	r.HandleFunc("/users-search", userController.SearchUsers).Methods("GET")
 
-	r.HandleFunc("/companies", companyController.CreateCompany).Methods("POST")
-	//Get all available Companies
-	r.HandleFunc("/companies", companyController.GetAllCompanies).Methods("GET")
-	// //Get Product By ID
-	// r.HandleFunc("/Companies/{productID}", companyController.GetCompanyByID).Methods("GET")
-	// //Add a particular Product to a particular Shopping User
+	{
+		r.HandleFunc("/companies", companyController.CreateCompany).Methods("POST")
+		//Get all available Companies
+		r.HandleFunc("/companies", companyController.GetAllCompanies).Methods("GET")
+		//Get company By ID
+		r.HandleFunc("/companies/{companyID}", companyController.GetCompanyByID).Methods("GET")
+	}
+
+	// //Add a particular company to a particular  User
 	// r.HandleFunc("/User/{UserID}", userController.AddCompanyToUser).Methods("POST")
-	// // Modify the amount of a particular product in a particular Shopping User
-	// // r.HandleFunc("/User/{UserID}/Companies/{productID}", userController.ModifyProductAmount).Methods("PUT")
-	// //Delete a particular product in a particular Shopping User
-	// r.HandleFunc("/User/{UserID}/Companies/{productID}", userController.DeleteCompanyFromUser).Methods("DELETE")
-	// // Delete all Companies from a particular Shopping User
+
+	// //Delete a particular company in a particular User
+	// r.HandleFunc("/User/{UserID}/Companies/{companyID}", userController.DeleteCompanyFromUser).Methods("DELETE")
+
+	// // Delete all companies from a particular  User
 	// r.HandleFunc("/User/{UserID}/Companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
-	// //Delete a particular Shopping User entirely
+
+	// //Delete a particular User entirely
 	// r.HandleFunc("/User/{UserID}", userController.DeleteUser).Methods("DELETE")
+
 	// r.PathPrefix("/swagger").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("./swagger"))))
 
 	http.Handle("/", r)
