@@ -23,3 +23,6 @@ t:
 
 down:
 	@docker-compose down --remove-orphans
+
+start:
+	@go run main.go
