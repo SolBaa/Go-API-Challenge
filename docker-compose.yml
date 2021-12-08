@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:12.1
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: 'marvik'
+      POSTGRES_USER: 'marvik'
+      POSTGRES_DB: 'marvik'
+  api:
+    image: marvik
+    build: 
+      context: .
+      target: build
+    command: gowatch
+    volumes:
+      - ./:/go/src/github.com/solbaa/marvik
+    ports:
+      - 48000:8000
+    env_file: .env
+    depends_on:
+      - db
+    networks: 
+      - default
+      - mikado-backend-net
+
+networks: 
+  mikado-backend-net:
+    name: mikado-backend-net #for interconnecting with the games wrappers
+    external: true

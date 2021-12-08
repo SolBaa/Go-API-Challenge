@@ -10,6 +10,7 @@ import (
 
 	"github.com/Solbaa/marvik/controllers"
 	"github.com/Solbaa/marvik/models"
+	"github.com/joho/godotenv"
 
 	"github.com/Solbaa/marvik/pkg/company"
 	"github.com/Solbaa/marvik/pkg/db"
@@ -23,7 +24,10 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	go countEveryFiveMinutes(infoLog)
 
@@ -72,7 +76,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:8080",
+		Addr:         fmt.Sprintf("0.0.0.0:%s", os.Getenv("PORT")),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
@@ -88,6 +92,6 @@ func countEveryFiveMinutes(infoLog *log.Logger) {
 	for {
 		time.Sleep(time.Minute * 5)
 		count += 5
-		infoLog.Printf("5 more minutes have passed since I'm Up, time: %d minutes\n", count)
+		infoLog.Printf("5 more minutes have passed since I'm up, time: %d minutes\n", count)
 	}
 }
