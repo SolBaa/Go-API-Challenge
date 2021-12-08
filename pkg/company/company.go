@@ -1,8 +1,9 @@
 package company
 
 import (
-	"fmt"
+	"math/rand"
 	"strconv"
+	"time"
 
 	"github.com/Solbaa/marvik/models"
 	"github.com/Solbaa/marvik/viewmodels"
@@ -17,7 +18,6 @@ type Service interface {
 
 type companyService struct {
 	db *gorm.DB
-	// cs company.Service
 }
 
 func NewService(db *gorm.DB) *companyService {
@@ -27,13 +27,13 @@ func NewService(db *gorm.DB) *companyService {
 }
 
 func (pc *companyService) CreateCompany(company viewmodels.CompanyViewmodel) (models.Company, error) {
-	// x1 := rand.NewSource(time.Now().UnixNano())
-	// y1 := rand.New(x1)
-	// userID := y1.Intn(200)
+	x1 := rand.NewSource(time.Now().UnixNano())
+	y1 := rand.New(x1)
+	companyID := y1.Intn(200)
 
 	companyModel := models.Company{
-		Name: company.Name,
-		// PublicID: strconv.Itoa(userID),
+		Name:     company.Name,
+		PublicID: strconv.Itoa(companyID),
 	}
 	err := pc.db.Omit("UserID").Create(&companyModel).Error
 	if err != nil {
@@ -56,7 +56,6 @@ func (pc *companyService) GetAllCompanies() ([]models.Company, error) {
 func (pc *companyService) GetCompanyByID(companyID string) (models.Company, error) {
 	company := models.Company{}
 	companyId, err := strconv.Atoi(companyID)
-	fmt.Println("GetCompanyByID", companyId)
 	if err != nil {
 		return models.Company{}, err
 	}

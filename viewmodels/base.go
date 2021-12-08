@@ -23,6 +23,14 @@ type CompanyRequest struct {
 	Company models.Company `json:"user_companies"`
 }
 
+type CounterResponse struct {
+	GetUsers         int `json:"get_users,omitempty"`
+	GetUserByID      int `json:"get_user_by_id,omitempty"`
+	AddCompanyToUser int `json:"add_company_to_user,omitempty"`
+	DeleteUser       int `json:"delete_user,omitempty"`
+	EndpointCounter  int `json:"endpoint_counter,omitempty"`
+}
+
 func ViewmodelToModel(companiesvm []CompanyViewmodel) []models.Company {
 	companies := []models.Company{}
 	for _, prod := range companiesvm {

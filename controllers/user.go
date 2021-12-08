@@ -79,7 +79,6 @@ func (c *UserController) SearchUsers(w http.ResponseWriter, r *http.Request) {
 	name := query.Get("name")
 	lastName := query.Get("lastName")
 	email := query.Get("email")
-	fmt.Println(name, lastName, email)
 
 	var usersViewmodel []viewmodels.UserViewModel
 	users, err := c.UserService.GetAllWithFilter(name, lastName, email)
@@ -146,23 +145,6 @@ func (c *UserController) AddCompanyToUser(w http.ResponseWriter, r *http.Request
 
 }
 
-// func (c *UserController) ModifyProductAmount(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	UserID := mux.Vars(r)["UserID"]
-// 	productID := mux.Vars(r)["productID"]
-// 	var productReq viewmodels.ProductRequest
-// 	err := json.NewDecoder(r.Body).Decode(&productReq)
-// 	if err != nil {
-// 		viewmodels.JSONError(w, viewmodels.ErrBadRequest, http.StatusBadRequest)
-// 		return
-// 	}
-// 	err = c.UserService.ModifyProductAmount(UserID, productID, productReq)
-// 	if err != nil {
-// 		viewmodels.JSONError(w, err, http.StatusBadRequest)
-// 		return
-// 	}
-// }
-
 func (c *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	userID := mux.Vars(r)["userID"]
@@ -208,11 +190,30 @@ func (c *UserController) DeleteCompanyFromUser(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	userID := mux.Vars(r)["userID"]
 	companyID := mux.Vars(r)["companyID"]
-	_, err := c.UserService.DeleteCompanyFromUser(userID, companyID)
+	comp, err := c.UserService.DeleteCompanyFromUser(userID, companyID)
 	if err != nil {
 		viewmodels.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
-	json.NewEncoder(w).Encode("Company deleted successfully from user")
+	json.NewEncoder(w).Encode(comp)
 
+}
+
+func (c *UserController) GetEndpointCount(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	counter, err := c.UserService.GetEndpointCount()
+	if err != nil {
+		viewmodels.JSONError(w, viewmodels.ErrInternal, http.StatusInternalServerError)
+		return
+
+	}
+	resp := viewmodels.CounterResponse{
+		GetUsers:         counter.GetUsers,
+		GetUserByID:      counter.GetUserByID,
+		AddCompanyToUser: counter.AddCompanyToUser,
+		DeleteUser:       counter.DeleteUser,
+		EndpointCounter:  counter.EndCounter,
+	}
+	json.NewEncoder(w).Encode(resp)
 }

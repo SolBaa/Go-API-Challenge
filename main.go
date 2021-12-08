@@ -31,15 +31,19 @@ func main() {
 	{
 		//Create a New User
 		r.HandleFunc("/users", userController.CreateUser).Methods("POST")
+
 		// Get a specific User
 		r.HandleFunc("/users/{userID}", userController.GetOneUser).Methods("GET")
+
 		//Get All the Users
 		r.HandleFunc("/users", userController.GetAllUsers).Methods("GET")
+
 		// Search user by query strings
 		r.HandleFunc("/users-search", userController.SearchUsers).Methods("GET")
 	}
 
 	{
+		//Create a company
 		r.HandleFunc("/companies", companyController.CreateCompany).Methods("POST")
 		//Get all available Companies
 		r.HandleFunc("/companies", companyController.GetAllCompanies).Methods("GET")
@@ -51,7 +55,7 @@ func main() {
 
 	{
 		//Delete a particular company in a particular User
-		// r.HandleFunc("/User/{UserID}/Companies/{companyID}", userController.DeleteCompanyFromUser).Methods("DELETE")
+		r.HandleFunc("/users/{userID}/companies/{companyID}", userController.DeleteCompanyFromUser).Methods("DELETE")
 
 		// Delete all companies from a particular  User
 		r.HandleFunc("/users/{userID}/companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
@@ -59,6 +63,7 @@ func main() {
 		//Delete a particular User entirely
 		r.HandleFunc("/users/{userID}", userController.DeleteUser).Methods("DELETE")
 	}
+	r.HandleFunc("/endpoint-count", userController.GetEndpointCount).Methods("GET")
 
 	// r.PathPrefix("/swagger").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("./swagger"))))
 

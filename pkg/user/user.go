@@ -9,9 +9,12 @@ import (
 
 	"github.com/Solbaa/marvik/models"
 	"github.com/Solbaa/marvik/pkg/company"
+
 	"github.com/Solbaa/marvik/viewmodels"
 	"gorm.io/gorm"
 )
+
+var counter models.CounterEndpoints
 
 type Service interface {
 	CreateUser(User viewmodels.UserViewModel) (models.User, error)
@@ -22,6 +25,7 @@ type Service interface {
 	DeleteUser(userID string) (models.User, error)
 	DeleteAllCompaniesFromUser(userID string) (models.User, error)
 	DeleteCompanyFromUser(userID, companyID string) (models.User, error)
+	GetEndpointCount() (*models.CounterEndpoints, error)
 }
 
 type userService struct {
@@ -68,6 +72,8 @@ func (c *userService) CreateUser(User viewmodels.UserViewModel) (models.User, er
 }
 
 func (c *userService) GetAllUsers() ([]models.User, error) {
+	counter.EndpointCounter("getUsers")
+
 	User := []models.User{}
 
 	err := c.db.Preload("Company").Find(&User).Error
@@ -78,30 +84,32 @@ func (c *userService) GetAllUsers() ([]models.User, error) {
 }
 
 func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.User, error) {
-	User := []models.User{}
+	user := []models.User{}
 	if name != "" {
-		err := c.db.Preload("Company").Where("name = ?", name).Find(&User).Error
+		err := c.db.Preload("Company").Where("name = ?", name).Find(&user).Error
 		if err != nil {
 			return nil, err
 		}
 	}
 	if lastName != "" {
-		err := c.db.Preload("Company").Where("last_name = ?", lastName).Find(&User).Error
+		err := c.db.Preload("Company").Where("last_name = ?", lastName).Find(&user).Error
 		if err != nil {
 			return nil, err
 		}
 	}
 	if email != "" {
-		err := c.db.Preload("Company").Where("email = ?", email).Find(&User).Error
+		err := c.db.Preload("Company").Where("email = ?", email).Find(&user).Error
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return User, nil
+	return user, nil
 }
 
 func (c *userService) GetOneUser(userID string) (models.User, error) {
+	counter.EndpointCounter("getUsersID")
+
 	user := models.User{}
 	userId, err := strconv.Atoi(userID)
 
@@ -118,6 +126,7 @@ func (c *userService) GetOneUser(userID string) (models.User, error) {
 }
 
 func (c *userService) AddCompanyToUser(userID, companyID string, company viewmodels.CompanyRequest) (models.User, error) {
+	counter.EndpointCounter("addCompany")
 	userId, err := strconv.Atoi(userID)
 	if err != nil {
 		return models.User{}, err
@@ -145,6 +154,7 @@ func (c *userService) AddCompanyToUser(userID, companyID string, company viewmod
 }
 
 func (c *userService) DeleteUser(userID string) (models.User, error) {
+	counter.EndpointCounter("deleteUser")
 	userId, err := strconv.Atoi(userID)
 	if err != nil {
 		return models.User{}, err
@@ -182,18 +192,28 @@ func (c *userService) DeleteCompanyFromUser(userID, companyID string) (models.Us
 	if err != nil {
 		return models.User{}, err
 	}
-	UserModel := models.User{}
-	err = c.db.Preload("company").Where("id = ?", userId).Find(&UserModel).Error
+	companyId, err := strconv.Atoi(companyID)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	userModel := models.User{}
+	err = c.db.Preload("Company").Where("id = ?", userId).Find(&userModel).Error
 	if err != nil {
 		fmt.Printf("User not found: %v", err)
 		return models.User{}, err
 	}
 	company := models.Company{}
-	err = c.db.Model(&company).Where("User_id=?", userId).Where("public_id = ?", companyID).Delete(&company).Error
+	err = c.db.Model(&company).Where("user_id=?", userId).Where("id = ?", companyId).Delete(&company).Error
 	if err != nil {
 		return models.User{}, err
 	}
 
-	return UserModel, nil
+	return userModel, nil
 
+}
+
+func (c *userService) GetEndpointCount() (*models.CounterEndpoints, error) {
+	endCounter := counter.EndpointCounter("endCounter")
+	return endCounter, nil
 }
