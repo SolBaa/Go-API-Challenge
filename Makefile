@@ -16,7 +16,7 @@ devshell:
 	@docker-compose run --rm --service-ports api sh
 
 up:
-	@docker-compose up
+	@docker-compose run --rm --service-ports api
 
 t:
 	@go test -cover ./...
