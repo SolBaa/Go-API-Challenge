@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"time"
 
@@ -22,22 +23,22 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	go countEveryFiveMinutes(infoLog)
+
 	companyService := company.NewService(db)
 	userService := user.NewService(db, companyService)
 	userController := controllers.NewUserService(userService)
 	companyController := controllers.NewCompanyService(companyService)
-
 	r := mux.NewRouter()
 	{
 		//Create a New User
 		r.HandleFunc("/users", userController.CreateUser).Methods("POST")
-
 		// Get a specific User
 		r.HandleFunc("/users/{userID}", userController.GetOneUser).Methods("GET")
-
 		//Get All the Users
 		r.HandleFunc("/users", userController.GetAllUsers).Methods("GET")
-
 		// Search user by query strings
 		r.HandleFunc("/users-search", userController.SearchUsers).Methods("GET")
 	}
@@ -56,16 +57,16 @@ func main() {
 	{
 		//Delete a particular company in a particular User
 		r.HandleFunc("/users/{userID}/companies/{companyID}", userController.DeleteCompanyFromUser).Methods("DELETE")
-
 		// Delete all companies from a particular  User
 		r.HandleFunc("/users/{userID}/companies", userController.DeleteAllCompaniesFromUser).Methods("DELETE")
-
 		//Delete a particular User entirely
 		r.HandleFunc("/users/{userID}", userController.DeleteUser).Methods("DELETE")
 	}
-	r.HandleFunc("/endpoint-count", userController.GetEndpointCount).Methods("GET")
 
-	// r.PathPrefix("/swagger").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("./swagger"))))
+	{
+		// Get the values of a counter of times that one of the available endpoints was called
+		r.HandleFunc("/endpoint-count", userController.GetEndpointCount).Methods("GET")
+	}
 
 	http.Handle("/", r)
 
@@ -76,5 +77,17 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
+	infoLog.Printf("Starting server on %s", srv.Addr)
+
 	log.Fatal(srv.ListenAndServe())
+
+}
+
+func countEveryFiveMinutes(infoLog *log.Logger) {
+	count := 0
+	for {
+		time.Sleep(time.Minute * 5)
+		count += 5
+		infoLog.Printf("5 more minutes have passed since I'm Up, time: %d minutes\n", count)
+	}
 }

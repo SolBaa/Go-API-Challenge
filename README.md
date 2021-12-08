@@ -32,4 +32,6 @@ d) cada 5 minutos incremente un segundo contador e imprima su valor a un log o c
 I'll use Postgres as a Database.
 
 ### Documentation
-Documentation of the endpoints will be done using OpenAPI spec in Swagger format. 
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/10470329-a5c72c4d-8d69-409f-b923-745224eff2c5?action=collection%2Ffork&collection-url=entityId%3D10470329-a5c72c4d-8d69-409f-b923-745224eff2c5%26entityType%3Dcollection%26workspaceId%3Df55dfa65-4072-4bc6-a31b-7dcd012dc208)
+

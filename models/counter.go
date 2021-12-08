@@ -1,7 +1,5 @@
 package models
 
-import "fmt"
-
 type CounterEndpoints struct {
 	GetUsers         int
 	GetUserByID      int
@@ -25,6 +23,6 @@ func (m *CounterEndpoints) EndpointCounter(endpoint string) *CounterEndpoints {
 		m.EndCounter += 1
 
 	}
-	fmt.Println(m)
+
 	return m
 }
