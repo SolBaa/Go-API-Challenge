@@ -4,18 +4,18 @@
 
 -- DROP TABLE public.users;
 
-CREATE TABLE public.users (
-	id bigserial NOT NULL,
-	created_at timestamptz NULL,
-	updated_at timestamptz NULL,
-	deleted_at timestamptz NULL,
-	public_id text NULL,
-	"name" text NULL,
-	last_name text NULL,
-	email text NULL,
-	CONSTRAINT users_pkey PRIMARY KEY (id)
-);
-CREATE INDEX idx_users_deleted_at ON public.users USING btree (deleted_at);
+-- CREATE TABLE public.users (
+-- 	id bigserial NOT NULL,
+-- 	created_at timestamptz NULL,
+-- 	updated_at timestamptz NULL,
+-- 	deleted_at timestamptz NULL,
+-- 	public_id text NULL,
+-- 	"name" text NULL,
+-- 	last_name text NULL,
+-- 	email text NULL,
+-- 	CONSTRAINT users_pkey PRIMARY KEY (id)
+-- );
+-- CREATE INDEX idx_users_deleted_at ON public.users USING btree (deleted_at);
 
 INSERT INTO public.users (created_at,updated_at,deleted_at,public_id,"name",last_name,email) VALUES
 	 ('2021-12-07 08:00:52.039226-03','2021-12-07 08:00:52.039226-03',NULL,'105','Sol','Battaglia','sol@gmial.com'),
@@ -33,22 +33,22 @@ INSERT INTO public.users (created_at,updated_at,deleted_at,public_id,"name",last
 
 -- DROP TABLE public.companies;
 
-CREATE TABLE public.companies (
-	id bigserial NOT NULL,
-	created_at timestamptz NULL,
-	updated_at timestamptz NULL,
-	deleted_at timestamptz NULL,
-	user_id int8 NULL,
-	public_id text NULL,
-	"name" text NULL,
-	CONSTRAINT companies_pkey PRIMARY KEY (id)
-);
-CREATE INDEX idx_companies_deleted_at ON public.companies USING btree (deleted_at);
+-- CREATE TABLE public.companies (
+-- 	id bigserial NOT NULL,
+-- 	created_at timestamptz NULL,
+-- 	updated_at timestamptz NULL,
+-- 	deleted_at timestamptz NULL,
+-- 	user_id int8 NULL,
+-- 	public_id text NULL,
+-- 	"name" text NULL,
+-- 	CONSTRAINT companies_pkey PRIMARY KEY (id)
+-- );
+-- CREATE INDEX idx_companies_deleted_at ON public.companies USING btree (deleted_at);
 
 
 -- public.companies foreign keys
 
-ALTER TABLE public.companies ADD CONSTRAINT fk_users_company FOREIGN KEY (user_id) REFERENCES public.users(id);
+-- ALTER TABLE public.companies ADD CONSTRAINT fk_users_company FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 INSERT INTO public.companies (created_at,updated_at,deleted_at,user_id,public_id,"name") VALUES
