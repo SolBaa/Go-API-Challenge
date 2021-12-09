@@ -19,22 +19,12 @@ If you want to populate the database with data you have to get inside the databa
 
       make database
 
- and then you have to copy the sql statements found in the db.sql file
+ and then you have to copy the sql statements found in the data.sql file (in the db.sql file you will find the entire database)
 
 And you are ready to Go!
 
 ---
 
-<!-- ## Technical Test -->
-Implementar una API en Golang que:
-
-a) se comunique con una base de datos (a elección) que tenga una tabla de usuarios con por lo menos los campos nombre, apellido y mail del usuario
-
-b) reciba un request que tenga filtros de búsqueda sobre la tabla usuarios y devuelva la lista de usuarios que cumplen con el criterio de búsqueda, paginando en el backend
-
-c) reciba un request GET que obtenga el valor de un contador de veces que fue llamado alguno de los endpoints disponibles
-
-d) cada 5 minutos incremente un segundo contador e imprima su valor a un log o consola
 
 ### Database
 
@@ -53,12 +43,7 @@ POST - localhost:8080/users
 {
   "name": "Matias",
   "last_name": "Lopez",
-  "email": "mati@gmail.com",
-  "user_company": [
-    {
-      "name": "Marvik"
-    }
-  ]
+  "email": "mati@gmail.com"
 }
 
 ```
@@ -77,9 +62,10 @@ GET- localhost:8080/users-search?name=sol
 ```
 #### Request params
 ```bash
-LastName
+LastName                    
 name
 email
+company
 
 ```
 ### Create Company
@@ -122,4 +108,23 @@ DELETE - localhost:8080/users/:userId/companies/:companyID
 ### Get Endpoints Count
 ```
 GET - localhost:8080/endpoint-count
+```
+
+``` bash
+{
+    "get_users": 1,
+    "get_user_by_id": 2,
+    "delete_user": 1,
+    "endpoint_counter": 3
+}
+
+```
+
+
+###  Every Five Minutes you'll find a logger that tells you how many minutes have passed since the service is up.
+
+``` shell
+INFO    2021/12/09 11:11:58 5 more minutes have passed since I'm Up, time: 5 minutes
+INFO    2021/12/09 11:16:58 5 more minutes have passed since I'm Up, time: 10 minutes
+INFO    2021/12/09 11:21:58 5 more minutes have passed since I'm Up, time: 15 minutes
 ```

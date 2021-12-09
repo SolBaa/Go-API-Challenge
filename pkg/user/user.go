@@ -19,7 +19,7 @@ var counter models.CounterEndpoints
 type Service interface {
 	CreateUser(User viewmodels.UserViewModel) (models.User, error)
 	GetAllUsers() ([]models.User, error)
-	GetAllWithFilter(name, lastName, email string) ([]models.User, error)
+	GetAllWithFilter(name, lastName, email, company string) ([]models.User, error)
 	GetOneUser(userID string) (models.User, error)
 	AddCompanyToUser(userID, companyID string) (models.User, error)
 	DeleteUser(userID string) (models.User, error)
@@ -63,7 +63,7 @@ func (c *userService) CreateUser(User viewmodels.UserViewModel) (models.User, er
 		}
 	}
 
-	err = c.db.Create(&userModel).Error
+	err = c.db.Omit("Company").Create(&userModel).Error
 	if err != nil {
 		return models.User{}, err
 	}
@@ -83,10 +83,26 @@ func (c *userService) GetAllUsers() ([]models.User, error) {
 	return User, nil
 }
 
-func (c *userService) GetAllWithFilter(name, lastName, email string) ([]models.User, error) {
+func (c *userService) GetAllWithFilter(name, lastName, email, company string) ([]models.User, error) {
 	user := []models.User{}
+	comp := []models.Company{}
+
+	if company != "" {
+		// First we check the company with that name
+		err := c.db.Where("name=?", company).Find(&comp).Error
+		if err != nil {
+			return nil, err
+		}
+		// Here we loop in the companies and find the users which have the company linked to that userID
+		for _, u := range comp {
+			err := c.db.Preload("Company").Where("id= ?", u.UserID).Find(&user).Error
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
 	if name != "" {
-		err := c.db.Preload("Company").Where("name = ?", name).Find(&user).Error
+		err := c.db.Preload("Company").Where("name= ?", name).Find(&user).Error
 		if err != nil {
 			return nil, err
 		}
