@@ -19,6 +19,7 @@ func NewCompanyService(c company.Service) *CompanyController {
 		CompanyService: c,
 	}
 }
+
 func (c *CompanyController) CreateCompany(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -42,6 +43,7 @@ func (c *CompanyController) CreateCompany(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(company)
 
 }
+
 func (pc *CompanyController) GetAllCompanies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var companyViewmodel []viewmodels.CompanyViewmodel

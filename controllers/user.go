@@ -21,7 +21,6 @@ func NewUserService(u user.Service) *UserController {
 	}
 }
 
-//Create User
 func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

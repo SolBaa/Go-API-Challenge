@@ -35,6 +35,7 @@ func (pc *companyService) CreateCompany(company viewmodels.CompanyViewmodel) (mo
 	comp, err := pc.GetAllCompanies()
 
 	for _, c := range comp {
+		// Check if we already have a company with that name
 		if c.Name == company.Name {
 			fmt.Printf("Company already exists: %v", err)
 			return models.Company{}, errors.New("Company already exists")

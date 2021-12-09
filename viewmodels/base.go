@@ -6,11 +6,12 @@ import (
 	"github.com/Solbaa/marvik/models"
 )
 
+// /UserViewModel ths is the struct of the user we show to the client
 type UserViewModel struct {
 	ID       string             `json:"user_id,omitempty"`
 	Name     string             `json:"name,omitempty"`
 	LastName string             `json:"last_name,omitempty"`
-	Email    string             `json:"email"`
+	Email    string             `json:"email,omitempty"`
 	Company  []CompanyViewmodel `json:"user_company"`
 }
 

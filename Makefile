@@ -26,9 +26,4 @@ start:
 
 database: 
 	@docker exec -it marvik_db_1 bash -c "psql -U gorm" 
-gg:	
-	@migrate -database "postgres://gorm:gorm@db:5432/simple_bank?sslmode=disable" -path db/migration up
-	# @migrate -path=./db -database="postgres://gorm:gorm@db:5432/simple_bank?sslmode=disable" -verbose up
 
-migrate-up:
-	migrate -source file:///$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))/db -database postgres://gorm:gorm@gorm:5432/gorm?sslmode=disable up

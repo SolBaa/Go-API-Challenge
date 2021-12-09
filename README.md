@@ -4,22 +4,34 @@ This is a solution of the Marvik Challenge
 
 The application is Dockerized, has a docker-compose file to boot the service quickly and a Makefile to start working ASAP.
 
+First you'll have to clone the repo.
+
+```bash
+git clone https://github.com/SolBaa/marvik_challenge.git
+```
+
+Inside marvik_challenge folder run:
+
 	make init
 	make build
-	make up
 
+
+`init` will populate the `.env` file needed for injecting environment variables
 
 `build` will create the development image to code inside of it.  
-`up` will run the API, exposing ports specified in the docker-compose file.  
-
-This lets the developer focus on the code, running it inside the container resembling production.
+  
 
 
 If you want to populate the database with data you have to get inside the database running:
 
       make database
 
- and then you have to copy the sql statements found in the data.sql file (in the db.sql file you will find the entire database)
+ and then you have to copy the sql statements found in Docs/data.sql file (in the db.sql file you will find the entire database)
+
+Finally run:
+
+    make up
+`up` will run the API, exposing ports specified in the docker-compose file.  
 
 And you are ready to Go!
 
@@ -33,6 +45,8 @@ I'll use Postgres as a Database.
 ### Documentation
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/10470329-a5c72c4d-8d69-409f-b923-745224eff2c5?action=collection%2Ffork&collection-url=entityId%3D10470329-a5c72c4d-8d69-409f-b923-745224eff2c5%26entityType%3Dcollection%26workspaceId%3Df55dfa65-4072-4bc6-a31b-7dcd012dc208)
+
+(If the button doesn't work, inside Docs folder you'll find the postman collection in JSON format so you can import it in your postman)
 
 ### Create Users
 ```

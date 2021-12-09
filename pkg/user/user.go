@@ -88,7 +88,7 @@ func (c *userService) GetAllWithFilter(name, lastName, email, company string) ([
 	comp := []models.Company{}
 
 	if company != "" {
-		// First we check the company with that name
+		// First we check if we have the company with that name
 		err := c.db.Where("name=?", company).Find(&comp).Error
 		if err != nil {
 			return nil, err
@@ -147,7 +147,7 @@ func (c *userService) AddCompanyToUser(userID, companyID string) (models.User, e
 	if err != nil {
 		return models.User{}, err
 	}
-
+	// Get the comany with the ID we wanna store inside user
 	comp, err := c.cs.GetCompanyByID(companyID)
 	if err != nil {
 		return models.User{}, err
@@ -159,6 +159,7 @@ func (c *userService) AddCompanyToUser(userID, companyID string) (models.User, e
 
 	companies := []models.Company{}
 	companies = append(companies, newCompany)
+	// In the user model we store the companies with the new one
 	userModel := models.User{
 		Company: companies,
 	}
