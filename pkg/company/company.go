@@ -1,6 +1,8 @@
 package company
 
 import (
+	"errors"
+	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -30,12 +32,20 @@ func (pc *companyService) CreateCompany(company viewmodels.CompanyViewmodel) (mo
 	x1 := rand.NewSource(time.Now().UnixNano())
 	y1 := rand.New(x1)
 	companyID := y1.Intn(200)
+	comp, err := pc.GetAllCompanies()
 
+	for _, c := range comp {
+		if c.Name == company.Name {
+			fmt.Printf("Company already exists: %v", err)
+			return models.Company{}, errors.New("Company already exists")
+		}
+	}
 	companyModel := models.Company{
 		Name:     company.Name,
 		PublicID: strconv.Itoa(companyID),
 	}
-	err := pc.db.Omit("UserID").Create(&companyModel).Error
+
+	err = pc.db.Omit("UserID").Create(&companyModel).Error
 	if err != nil {
 		return models.Company{}, err
 	}

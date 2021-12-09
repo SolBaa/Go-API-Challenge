@@ -21,7 +21,7 @@ type Service interface {
 	GetAllUsers() ([]models.User, error)
 	GetAllWithFilter(name, lastName, email string) ([]models.User, error)
 	GetOneUser(userID string) (models.User, error)
-	AddCompanyToUser(userID, companyID string, user viewmodels.CompanyRequest) (models.User, error)
+	AddCompanyToUser(userID, companyID string) (models.User, error)
 	DeleteUser(userID string) (models.User, error)
 	DeleteAllCompaniesFromUser(userID string) (models.User, error)
 	DeleteCompanyFromUser(userID, companyID string) (models.User, error)
@@ -125,7 +125,7 @@ func (c *userService) GetOneUser(userID string) (models.User, error) {
 	return user, nil
 }
 
-func (c *userService) AddCompanyToUser(userID, companyID string, company viewmodels.CompanyRequest) (models.User, error) {
+func (c *userService) AddCompanyToUser(userID, companyID string) (models.User, error) {
 	counter.EndpointCounter("addCompany")
 	userId, err := strconv.Atoi(userID)
 	if err != nil {

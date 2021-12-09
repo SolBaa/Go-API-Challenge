@@ -51,7 +51,7 @@ func main() {
 		//Get company By ID
 		r.HandleFunc("/companies/{companyID}", companyController.GetCompanyByID).Methods("GET")
 		//Add a particular company to a particular User
-		r.HandleFunc("/users/{userID}/{companyID}", userController.AddCompanyToUser).Methods("POST")
+		r.HandleFunc("/users/{userID}/{companyID}", userController.AddCompanyToUser).Methods("PUT")
 	}
 
 	{
@@ -72,7 +72,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:8080",
+		Addr:         "0.0.0.0:8080",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
